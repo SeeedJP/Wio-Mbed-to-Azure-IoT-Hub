@@ -4,13 +4,20 @@
 #define IOTHUB_AUTH_CLIENT_SIDE_CERT    1
 #define IOTHUB_AUTH_SYMMETRIC_KEY       2
 
-// Set your authentication method here
-#define IOTHUB_AUTH_METHOD              IOTHUB_AUTH_CLIENT_SIDE_CERT
-
-#define DEVICE_ID                       "<< REPLACE WITH YOUR DEVICE ID >>"
 #define MQTT_SERVER_HOST_NAME           "<< REPLACE WITH YOUR HOST NAME >>"
-#define MQTT_SERVER_PASSWORD            "ignored"   // If you're using symmetric key authentication, set this to an SAS Token
 #define MQTT_SERVER_PORT                8883
+
+// Set your authentication method here
+
+//#define IOTHUB_AUTH_METHOD              IOTHUB_AUTH_CLIENT_SIDE_CERT
+//#define DEVICE_ID                       "<< REPLACE WITH YOUR DEVICE ID >>"
+//#define MQTT_SERVER_PASSWORD            "ignore"   // If you're using symmetric key authentication, set this to an SAS Token
+
+#define IOTHUB_AUTH_METHOD              IOTHUB_AUTH_SYMMETRIC_KEY
+#define DEVICE_ID                       "<< REPLACE WITH YOUR DEVICE ID >>"
+// can get SAS token by: az iot hub generate-sas-token -d <<Device ID>> -n << IoT Hub Name >>
+// This should be like "SharedAccessSignature sr=xxxx.azure-devices.net%2Fdevices%2Fxxx&sig=xxxxxxxxx&se=xxxxxxxxxx"
+#define MQTT_SERVER_PASSWORD            "<< REPLACE WITH YOUR SAS TOKEN >>"
 
 /*
  * Root CA certificate here in PEM format.
@@ -148,3 +155,4 @@ const char* SSL_CLIENT_PRIVATE_KEY_PEM = "<< REPLACE WITH YOUR KEY >>";
 #endif // IOTHUB_AUTH_METHOD == IOTHUB_AUTH_CLIENT_SIDE_CERT
 
 #endif /* __MQTT_SERVER_SETTING_H__ */
+

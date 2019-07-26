@@ -20,6 +20,10 @@
 #define MQTTCLIENT_QOS2 0
 
 #include "mbed.h"
+#include "common_functions.h"
+#include "CellularNonIPSocket.h"
+#include "CellularDevice.h"
+#include "CellularLog.h"
 #include "MQTTNetwork.h"
 #include "MQTTmbed.h"
 #include "MQTTClient.h"
@@ -33,10 +37,6 @@
 #define MQTT_MAX_PACKET_SIZE  1024
 
 #define TIME_JWT_EXP      (60*60*24)  // 24 hours (MAX)
-
-// LED on/off - This could be different among boards
-#define LED_ON  0
-#define LED_OFF 1
 
 /* Flag to be set when a message needs to be published, i.e. BUTTON is pushed. */
 static volatile bool isPublish = false;
@@ -59,15 +59,8 @@ int main(int argc, char* argv[])
 
     NetworkInterface* network = NULL;
 
-    DigitalOut led_red(LED1, LED_OFF);
-    DigitalOut led_green(LED2, LED_OFF);
-    DigitalOut led_blue(LED3, LED_OFF);
-
     printf("Mbed to Azure IoT Hub: version is %.2f\r\n", version);
     printf("\r\n");
-
-    // Turns on green LED to indicate processing initialization process
-    led_green = LED_ON;
 
     printf("Opening network interface...\r\n");
 
@@ -152,10 +145,6 @@ int main(int argc, char* argv[])
     printf("Client connected.\r\n");
     printf("\r\n");
 
-    // Network initialization done. Turn off the green LED
-    led_green = LED_OFF;
-
-
     // Generates topic names from user's setting in MQTT_server_setting.h
     //devices/{device_id}/messages/events/
     const char *mqtt_topic_pub = "devices/" DEVICE_ID "/messages/events/";
@@ -202,9 +191,6 @@ int main(int argc, char* argv[])
             static unsigned int id = 0;
             static unsigned int count = 0;
 
-            // When sending a message, blue LED lights.
-            led_blue = LED_ON;
-
             MQTT::Message message;
             message.retained = false;
             message.dup = false;
@@ -226,8 +212,6 @@ int main(int argc, char* argv[])
             printf("Message published.\r\n");
 
             count++;
-
-            led_blue = LED_OFF;
         }
     }
 
@@ -250,9 +234,6 @@ int main(int argc, char* argv[])
         network->disconnect();
         // network is not created by new.
     }
-
-    // Turn on the red LED when the program is done.
-    led_red = LED_ON;
 }
 
 /*
@@ -274,3 +255,4 @@ void handleMqttMessage(MQTT::MessageData& md)
 void handleButtonRise() {
     isPublish = true;
 }
+
